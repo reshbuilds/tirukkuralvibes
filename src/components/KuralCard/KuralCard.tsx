@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '@mui/material/styles';
 import { Card, CardContent, Typography, Box, IconButton, Button } from '@mui/material';
 import HighlightedText from '../common/HighlightedText';
 import { styled } from '@mui/material/styles';
@@ -19,22 +18,13 @@ interface KuralCardProps {
 const StyledCard = styled(Card)(({ theme }) => ({
   maxWidth: 800,
   margin: '0 auto',
-  padding: theme.spacing(2),
+  padding: theme.spacing(3),
   borderRadius: 16,
   background: 'linear-gradient(145deg, #ffffff, #e6f7ed)',
   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
   position: 'relative',
   overflow: 'visible',
   transition: 'all 0.3s ease',
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(1.5),
-    minHeight: 'calc(100vh - 32px)',
-    margin: '16px auto',
-  },
   '&:hover': {
     transform: 'translateY(-5px)',
     boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
@@ -62,45 +52,35 @@ const KuralText = styled(Typography)(({ theme }) => ({
   fontFamily: '"Tamil Sangam MN", "Latha", "Nirmala UI", sans-serif',
   fontSize: '1.8rem',
   fontWeight: 500,
-  lineHeight: 1.3,
+  lineHeight: 1.4,
   color: theme.palette.primary.dark,
   textAlign: 'center',
-  margin: '8px 0',
+  marginBottom: theme.spacing(2),
   [theme.breakpoints.down('sm')]: {
-    fontSize: '1.4rem',
-    margin: '4px 0',
+    fontSize: '1.5rem',
   },
 }));
 
 const TransliterationText = styled(Typography)(({ theme }) => ({
   fontFamily: '"Nunito", "Roboto", sans-serif',
-  fontSize: '1rem',
+  fontSize: '1.1rem',
   color: theme.palette.text.secondary,
   fontStyle: 'italic',
   textAlign: 'center',
-  margin: '4px 0',
-  lineHeight: 1.4,
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '0.9rem',
-    margin: '2px 0',
-  },
+  marginBottom: theme.spacing(2),
+  lineHeight: 1.6,
 }));
 
 const MeaningText = styled(Typography)(({ theme }) => ({
   fontFamily: '"Nunito", "Roboto", sans-serif',
-  fontSize: '1.1rem',
+  fontSize: '1.2rem',
   color: theme.palette.text.primary,
   textAlign: 'center',
-  margin: '8px 0',
-  padding: '8px 0',
+  marginTop: theme.spacing(3),
+  padding: theme.spacing(2, 0),
   borderTop: `1px solid ${theme.palette.divider}`,
   borderBottom: `1px solid ${theme.palette.divider}`,
-  lineHeight: 1.5,
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '1rem',
-    margin: '6px 0',
-    padding: '6px 0',
-  },
+  lineHeight: 1.6,
 }));
 
 const NavigationButton = styled(IconButton)(({ theme }) => ({
@@ -131,7 +111,6 @@ const KuralCard: React.FC<KuralCardProps> = ({
   hasPrevious,
   totalKurals,
 }) => {
-  const theme = useTheme();
   const [inputValue, setInputValue] = useState(String(kural.KuralID + 1));
 
   // Update input value when kural changes
@@ -180,8 +159,8 @@ const KuralCard: React.FC<KuralCardProps> = ({
       </NavigationButton>
 
       <StyledCard elevation={3}>
-        <Box display="flex" justifyContent="center" alignItems="center" mb={2} mt={1} flexWrap="wrap">
-          <Typography variant="body1" style={{ marginRight: '8px', whiteSpace: 'nowrap' }}>
+        <Box display="flex" justifyContent="center" mb={2} alignItems="center">
+          <Typography variant="body2" color="text.secondary" mr={1}>
             Kural:
           </Typography>
           <input
@@ -205,17 +184,8 @@ const KuralCard: React.FC<KuralCardProps> = ({
           <Button 
             variant="contained" 
             color="primary" 
-            size="small"
             onClick={handleGoToKuralClick}
             disabled={!inputValue || parseInt(inputValue, 10) < 1 || parseInt(inputValue, 10) > totalKurals}
-            sx={{
-              padding: '4px 12px',
-              minWidth: 'auto',
-              [theme.breakpoints.down('sm')]: {
-                padding: '2px 8px',
-                fontSize: '0.8rem',
-              },
-            }}
           >
             Go
           </Button>
