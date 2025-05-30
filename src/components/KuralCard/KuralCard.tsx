@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Box, IconButton, Button } from '@mui/material';
 import HighlightedText from '../common/HighlightedText';
 import { styled } from '@mui/material/styles';
@@ -91,6 +91,7 @@ const NavigationButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.primary.main,
   width: 48,
   height: 48,
+  zIndex: 1, // Ensure buttons are above the card
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
   '&:hover': {
     backgroundColor: theme.palette.primary.light,
@@ -110,23 +111,34 @@ const KuralCard: React.FC<KuralCardProps> = ({
   hasPrevious,
   totalKurals,
 }) => {
-  const currentKuralNumber = kural.KuralID + 1; // Display as 1-based index
-  const [kuralInput, setKuralInput] = useState(currentKuralNumber);
-  
+  const [inputValue, setInputValue] = useState(String(kural.KuralID + 1));
+
+  // Update input value when kural changes
+  useEffect(() => {
+    setInputValue(String(kural.KuralID + 1));
+  }, [kural.KuralID]);
+
   const handleKuralInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    
+    // Allow empty input for better UX when deleting
     if (value === '') {
-      setKuralInput(1);
+      setInputValue('');
       return;
     }
-    const num = parseInt(value, 10);
-    if (!isNaN(num) && num >= 1 && num <= 1330) {
-      setKuralInput(num);
+    
+    // Only allow numbers
+    if (/^\d*$/.test(value)) {
+      setInputValue(value);
     }
   };
   
   const handleGoToKuralClick = () => {
-    onGoToKural(kuralInput - 1); // Convert back to 0-based for internal use
+    if (!inputValue) return;
+    const num = parseInt(inputValue, 10);
+    if (num >= 1 && num <= 1330) {
+      onGoToKural(num - 1); // Convert back to 0-based for internal use
+    }
   };
   
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -152,31 +164,33 @@ const KuralCard: React.FC<KuralCardProps> = ({
             Kural:
           </Typography>
           <input
-            type="number"
-            value={kuralInput}
+            type="text"
+            value={inputValue}
             onChange={handleKuralInput}
             onKeyDown={handleKeyDown}
-            min={1}
-            max={1330}
             style={{
-              width: '60px',
-              padding: '4px 8px',
-              margin: '0 8px',
+              width: '80px',
+              textAlign: 'center',
+              margin: '0 10px',
+              padding: '8px',
               borderRadius: '4px',
               border: '1px solid #ccc',
-              textAlign: 'center'
+              fontSize: '1rem',
             }}
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="1-1330"
           />
           <Button 
             variant="contained" 
             color="primary" 
             onClick={handleGoToKuralClick}
-            disabled={kuralInput < 1 || kuralInput > totalKurals}
+            disabled={!inputValue || parseInt(inputValue, 10) < 1 || parseInt(inputValue, 10) > totalKurals}
           >
             Go
           </Button>
         </Box>
-        <KuralNumber>{currentKuralNumber}</KuralNumber>
+        <KuralNumber>{kural.KuralID + 1}</KuralNumber>
         <CardContent>
           <KuralText variant="h2">
             {kural.VerseTamil.map((line, index) => (
@@ -211,8 +225,8 @@ const KuralCard: React.FC<KuralCardProps> = ({
           </MeaningText>
           
           <Box mt={3} textAlign="center">
-            <Typography variant="body2" color="text.secondary" textAlign="center">
-              {currentKuralNumber} / {totalKurals}
+            <Typography variant="body2" color="textSecondary" style={{ marginTop: '8px' }}>
+              Showing {kural.KuralID + 1} of {totalKurals}
             </Typography>
           </Box>
         </CardContent>
