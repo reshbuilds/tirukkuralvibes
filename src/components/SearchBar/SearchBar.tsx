@@ -126,7 +126,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = 'Search by Tamil or English...',
 }) => {
   const [query, setQuery] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
 
@@ -167,7 +166,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   const handleFocus = () => {
-    setIsFocused(true);
     if (query.trim() && results.length > 0) {
       setShowResults(true);
     }
@@ -176,7 +174,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleBlur = () => {
     // Use setTimeout to allow click events to fire on the results before hiding them
     setTimeout(() => {
-      setIsFocused(false);
       setShowResults(false);
     }, 200);
   };
